@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel | SkyVault</title>
+
+<link rel="stylesheet" href="/static/css/admin.css">
+<link rel="stylesheet" href="/static/css/main.css">
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="sidebar">
+
+<div class="logo">☁ SkyVault</div>
+
+<a href="/dashboard" class="{{ 'active' if request.path == '/dashboard' else '' }}">🏠 Dashboard</a>
+<a href="/files" class="{{ 'active' if request.path == '/files' else '' }}">📁 My Files</a>
+<a href="/profile" class="{{ 'active' if request.path == '/profile' else '' }}">👤 Profile</a>
+<a href="/settings" class="{{ 'active' if request.path == '/settings' else '' }}">⚙ Settings</a>
+<a href="/trash" class="{{ 'active' if request.path == '/trash' else '' }}">🗑 Trash</a>
+
+<a href="/admin" class="{{ 'active' if request.path == '/admin' else '' }}">🛡 Admin</a>
+<a href="/analytics" class="{{ 'active' if request.path == '/analytics' else '' }}">📊 Analytics</a>
+
+<div style="margin-top:auto"></div>
+
+<a href="/logout">🚪 Logout</a>
+
+</div>
+
+<div class="main">
+
+<h1>🛡 Admin Dashboard</h1>
+<br>
+<div class="card">Total Users: {{ users_count }}</div>
+<div class="card">Total Files: {{ files_count }}</div>
+{% if storage > 1024 %}
+<div class="card">Total Storage: {{ (storage/1024)|round(2) }} GB</div>
+{% else %}
+<div class="card">Total Storage: {{ storage|round(2) }} MB</div>
+{% endif %}
+
+<table>
+
+<tr>
+<th>User</th>
+<th>Email</th>
+<th>Files</th>
+<th>Storage Used</th>
+</tr>
+
+{% for u in users %}
+<tr>
+<td>{{ u.name }}</td>
+<td>{{ u.email }}</td>
+<td>{{ u.files }}</td>
+<td>{{ u.storage }} MB</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+
+<script src="/static/js/bg.js"></script>
+
+</body>
+</html>

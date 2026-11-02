@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Analytics | SkyVault</title>
+<link rel="stylesheet" href="/static/css/main.css">
+<link rel="stylesheet" href="/static/css/admin.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+    
+    .sidebar{
+width:230px;
+height:100vh;
+background:var(--sidebar);
+padding:20px;
+display:flex;
+flex-direction:column;
+position:fixed;
+left:0;
+top:0;
+border-right:1px solid var(--border);
+}
+
+.logo{
+font-size:22px;
+font-weight:700;
+color:var(--text);
+margin-bottom:25px;
+}
+
+/* MENU LINKS */
+
+.sidebar a{
+display:flex;
+align-items:center;
+gap:12px;
+padding:12px 14px;
+border-radius:10px;
+text-decoration:none;
+color:var(--muted);
+font-size:15px;
+margin-bottom:6px;
+transition:all .2s ease;
+}
+
+/* HOVER EFFECT */
+
+.sidebar a:hover{
+background:linear-gradient(90deg,var(--accent1),var(--accent2));
+color:white;
+transform:translateX(4px);
+}
+
+/* ACTIVE PAGE */
+
+.sidebar a.active{
+background:linear-gradient(90deg,var(--accent1),var(--accent2));
+color:white;
+box-shadow:0 5px 15px rgba(0,0,0,.3);
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="sidebar">
+
+<div class="logo">☁ SkyVault</div>
+
+<a href="/dashboard" class="{{ 'active' if request.path == '/dashboard' else '' }}">🏠 Dashboard</a>
+<a href="/files" class="{{ 'active' if request.path == '/files' else '' }}">📁 My Files</a>
+<a href="/profile" class="{{ 'active' if request.path == '/profile' else '' }}">👤 Profile</a>
+<a href="/settings" class="{{ 'active' if request.path == '/settings' else '' }}">⚙ Settings</a>
+<a href="/trash" class="{{ 'active' if request.path == '/trash' else '' }}">🗑 Trash</a>
+
+<a href="/admin" class="{{ 'active' if request.path == '/admin' else '' }}">🛡 Admin</a>
+<a href="/analytics" class="{{ 'active' if request.path == '/analytics' else '' }}">📊 Analytics</a>
+
+<div style="margin-top:auto"></div>
+
+<a href="/logout">🚪 Logout</a>
+
+</div>
+
+<div class="main">
+
+<h1>📊 Storage Analytics</h1>
+<br>
+<div class="card">Users: {{users}}</div>
+<div class="card">Files: {{files}}</div>
+<div class="card">Images: {{images}}</div>
+<div class="card">Videos: {{videos}}</div>
+{% if storage > 1024 %}
+<div class="card">Total Storage: {{ (storage/1024)|round(2) }} GB</div>
+{% else %}
+<div class="card">Total Storage: {{ storage|round(2) }} MB</div>
+{% endif %}
+
+<div class="charts">
+
+<div class="chart-card">
+<canvas id="uploadChart"></canvas>
+</div>
+
+<div class="chart-card">
+<canvas id="userChart"></canvas>
+</div>
+
+<div class="chart-card">
+<canvas id="storageChart"></canvas>
+</div>
+
+</div>
+
+</div>
+
+<script src="/static/js/analytics.js"></script>
+<script src="/static/js/bg.js"></script>
+<script>
+    fetch("/api/analytics")
+.then(res => res.json())
+.then(data => {
+
+console.log(data)
+
+document.getElementById("users").innerText = data.users
+document.getElementById("files").innerText = data.files
+document.getElementById("storage").innerText = data.storage
+
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard | SkyVault</title>
+
+<link rel="stylesheet" href="/static/css/main.css">
+
+<style>
+/* ===== DASHBOARD UI FIX PATCH ===== */
+
+/* Upload box fix */
+.upload-zone{
+  height:315px;
+  border-radius:22px;
+  border:2px dashed rgba(255,255,255,.25);
+  background:rgba(255,255,255,.05);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+/* Grid fix */
+.recent-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:18px;
+}
+
+/* Card fix */
+.file-card{
+  background:rgba(255,255,255,.06);
+  border-radius:18px;
+  padding:16px;
+  transition:.3s;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Hover effect */
+.file-card:hover{
+  transform:translateY(-6px) scale(1.02);
+  background:rgba(255,255,255,.12);
+}
+
+.file-thumb{
+  width:100%;
+  height:120px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  border-radius:12px;
+}
+
+/* Filename overflow fix */
+.file-name{
+  margin-top:8px;
+  font-weight:600;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  width:100%;
+}
+
+/* Action icons alignment */
+.file-actions{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin-top:10px;
+}
+
+.file-actions a{
+  font-size:20px;
+  text-decoration:none;
+  transition:.25s;
+}
+
+.file-actions a:hover{
+  transform:scale(1.2);
+}
+
+.storage-bar{
+    width:100%;
+    height:15px;
+    background:#1e293b;
+    border-radius:20px;
+    overflow:hidden;
+}
+.storage-fill{
+    height:100%;
+    background:linear-gradient(90deg,#6366f1,#22d3ee);
+}
+
+.progress-bar{
+width:60%;
+height:8px;
+background:#1e293b;
+margin:auto;
+border-radius:10px;
+overflow:hidden;
+}
+
+#progress{
+width:0%;
+height:100%;
+background:#22c55e;
+}
+
+#bg{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+
+.search{
+width:320px;
+padding:10px 14px;
+border-radius:10px;
+border:none;
+background:#1f2937;
+color:white;
+outline:none;
+}
+
+.file-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+  <canvas id="bg"></canvas>
+
+<div class="app">
+
+<div class="sidebar">
+
+  <div class="logo">☁ SkyVault</div>
+  <a href="/dashboard" class="{{ 'active' if request.path == '/dashboard' else '' }}">🏠 Dashboard</a>
+
+<a href="/files" class="{{ 'active' if request.path == '/files' else '' }}">📁 My Files</a>
+
+<a href="/profile" class="{{ 'active' if request.path == '/profile' else '' }}">👤 Profile</a>
+
+<a href="/settings" class="{{ 'active' if request.path == '/settings' else '' }}">⚙ Settings</a>
+
+<a href="/trash" class="{{ 'active' if request.path == '/trash' else '' }}">🗑 Trash</a>
+
+{% if session['email'] == 'salmangj112@gmail.com' %}
+<a href="/admin">🛡 Admin</a>
+<a href="/analytics">📊 Analytics</a>
+{% endif %}
+
+
+<div style="margin-top:auto"></div>
+
+<a href="/logout">🚪 Logout</a>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+  <input id="searchInput" class="search" placeholder="🔍 Search files..."> 
+
+</div>
+
+
+<p>{{ used|round(2) }} MB / 18432 MB</p>
+
+
+<div class="storage-bar">
+    <div class="storage-fill"
+         style="width: {{ (used / 18432 * 100)|round(2) }}%">
+    </div>
+</div>
+<br>
+
+<div class="card-grid">
+  <div class="card"><h3>Total Files</h3><span>{{ total_files }}</span></div>
+  <div class="card"><h3>Storage Used</h3><span>{{ total_size|round(2) }} MB</span></div>
+  <div class="card"><h3>Shared</h3><span>{{ shared }}</span></div>
+  <div class="card"><h3>Downloads</h3><span>{{ downloads }}</span></div>
+</div>
+
+
+
+<div class="upload-zone" id="dropZone">
+
+<div class="upload-3d">
+
+<div class="cube">
+<div class="face front">☁</div>
+<div class="face back">📁</div>
+<div class="face right">⬆</div>
+<div class="face left">📂</div>
+<div class="face top">💾</div>
+<div class="face bottom">🚀</div>
+</div>
+<br>
+<h2>☁ Drag & Drop Files</h2>
+<p>Upload videos, pdf, images, docs etc...</p>
+
+<form id="uploadForm" enctype="multipart/form-data">
+
+<input type="file" name="file">
+
+<button type="submit">Upload</button>
+
+<div class="progress">
+<div id="progressBar"></div>
+</div>
+
+</form>
+
+<style>
+
+.progress{
+width:100%;
+height:8px;
+background:#1f2937;
+border-radius:10px;
+margin-top:15px;
+}
+
+#progressBar{
+height:8px;
+width:0%;
+background:#22c55e;
+border-radius:10px;
+transition:.2s;
+}
+
+</style>
+
+<script>
+
+document.getElementById("uploadForm").addEventListener("submit",function(e){
+
+e.preventDefault()
+
+let fileInput = this.querySelector("input[type=file]")
+
+if(!fileInput.files.length){
+alert("Select file first")
+return
+}
+
+let formData = new FormData()
+
+formData.append("file",fileInput.files[0])
+
+let xhr = new XMLHttpRequest()
+
+xhr.open("POST","/upload",true)
+
+xhr.upload.addEventListener("progress",function(e){
+
+if(e.lengthComputable){
+
+let percent=(e.loaded/e.total)*100
+document.getElementById("progressBar").style.width=percent+"%"
+
+}
+
+})
+
+xhr.onload=function(){
+
+document.getElementById("progressBar").style.width="100%"
+
+setTimeout(()=>{
+location.reload()
+},800)
+
+}
+
+xhr.send(formData)
+
+})
+
+let dropZone=document.getElementById("dropZone")
+
+dropZone.addEventListener("dragover",e=>{
+e.preventDefault()
+dropZone.style.borderColor="#22c55e"
+})
+
+dropZone.addEventListener("drop",function(e){
+
+e.preventDefault()
+
+let file=e.dataTransfer.files[0]
+
+let formData=new FormData()
+
+formData.append("file",file)
+
+fetch("/upload",{method:"POST",body:formData})
+.then(()=>location.reload())
+
+})
+
+</script>
+</div>
+
+</div>
+
+<h2>Recent Files</h2>
+<br>
+<div class="recent-grid">
+
+{% for f in files %}
+<div class="file-card" data-name="{{ f.filename|lower }}">
+
+<div class="file-thumb">
+
+{% if f.filetype in ['jpg','jpeg','png','gif'] %}
+<img src="/uploads/{{ f.filename }}">
+
+{% elif f.filetype in ['mp4','mkv','mov','avi','webm'] %}
+<img src="/uploads/{{ f.filename }}_thumb.jpg" width="150">
+
+{% elif f.filetype == 'pdf' %}
+📕
+
+{% elif f.filetype in ['mp3','wav'] %}
+🎵
+
+{% else %}
+📄
+{% endif %}
+
+</div>
+
+<div class="file-name">{{ f.filename }}</div>
+
+<div class="file-actions">
+<a href="/preview/{{ f.id }}" title="Preview">👁</a>
+<a href="/download/{{ f.id }}" title="Download">⬇</a>
+<a href="/share/{{ f.id }}" title="Share">🔗</a>
+<a href="/delete/{{ f.id }}" onclick="return confirm('Move this file to trash?')">🗑</a>
+</div>
+
+</div>
+{% endfor %}
+
+</div>
+ 
+<script src="/static/js/bg.js"></script>
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const searchInput = document.getElementById("searchInput")
+const fileCards = document.querySelectorAll(".file-card")
+
+if(!searchInput) return
+
+searchInput.addEventListener("input", function(){
+
+let query = this.value.toLowerCase().trim()
+
+fileCards.forEach(card => {
+
+let name = card.dataset.name || ""
+
+if(name.includes(query)){
+card.style.display = "flex"
+}else{
+card.style.display = "none"
+}
+
+})
+
+})
+
+})
+
+</script>
+</body>
+</html>

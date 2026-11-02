@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Editor | SkyVault</title>
+
+<style>
+
+body{
+background:#0f172a;
+font-family:system-ui;
+color:white;
+padding:40px;
+text-align:center;
+}
+
+/* PAGE WRAPPER */
+
+.editor-wrapper{
+display:flex;
+justify-content:center;
+margin-top:30px;
+}
+
+/* DOCUMENT PAGE */
+
+.doc-page{
+background:white;
+color:black;
+width:850px;
+min-height:1000px;
+padding:80px;
+border-radius:6px;
+box-shadow:0 10px 40px rgba(0,0,0,.4);
+font-family:Calibri, Arial;
+font-size:18px;
+line-height:1.8;
+text-align:left;
+outline:none;
+}
+
+/* SAVE BUTTON */
+
+button{
+margin-top:25px;
+padding:12px 30px;
+border:none;
+background:#22c55e;
+color:white;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#16a34a;
+}
+#bg{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+</style>
+</head>
+
+
+<body>
+<canvas id="bg"></canvas>
+<h2>Edit {{file.filename}}</h2>
+
+<div class="editor-wrapper">
+
+<div class="doc-page" id="editor" contenteditable="true">
+{{ content|safe }}
+</div>
+
+</div>
+
+<button onclick="saveContent()">Save Document</button>
+
+<script>
+
+async function saveContent(){
+
+let content = document.getElementById("editor").innerHTML;
+
+let response = await fetch(window.location.href,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({content:content})
+});
+
+let data = await response.json();
+
+if(data.status === "success"){
+window.location.href = data.redirect;
+}else{
+alert("Save failed: " + data.message);
+}
+
+}
+
+async function saveContent(){
+
+let content = document.getElementById("editor").innerHTML;
+
+let response = await fetch(window.location.href,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({content:content})
+});
+
+let data = await response.json();
+
+if(data.status === "success"){
+window.location.href = data.redirect;
+}else{
+alert("Save failed");
+}
+
+}
+</script>
+<script src="/static/js/bg.js"></script>
+</body>
+</html>

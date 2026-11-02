@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{title}}</title>
+
+<link rel="stylesheet" href="/static/css/main.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="app">
+
+{% include "sidebar.html" %}
+
+<div class="main">
+
+<div class="topbar">
+<input class="search" placeholder="Search files...">
+
+<span class="theme-toggle" onclick="toggleTheme()">🌙</span>
+</div>
+
+{% block content %}{% endblock %}
+
+</div>
+</div>
+
+<script src="/static/js/theme.js"></script>
+<script src="/static/js/bg.js"></script>
+
+</body>
+</html>

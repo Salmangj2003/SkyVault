@@ -1,0 +1,38 @@
+.share-card{
+background:white;
+max-width:420px;
+margin:80px auto;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+text-align:center;
+}
+
+.share-card select{
+width:100%;
+padding:12px;
+margin:15px 0;
+border-radius:10px;
+border:1px solid #ddd;
+}
+
+.share-link{
+display:flex;
+gap:8px;
+margin-top:15px;
+}
+
+.share-link input{
+flex:1;
+padding:10px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+.share-link button{
+background:#1a73e8;
+border:none;
+color:white;
+padding:10px 16px;
+border-radius:8px;
+}

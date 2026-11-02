@@ -1,0 +1,89 @@
+.profile-card{
+background:white;
+width:380px;
+margin:60px auto;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+text-align:center;
+}
+
+.avatar{
+width:90px;
+border-radius:50%;
+margin-bottom:10px;
+}
+
+.profile-card input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:10px;
+border:1px solid #ddd;
+}
+
+.profile-card button{
+background:#1a73e8;
+border:none;
+color:white;
+padding:12px;
+width:100%;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Segoe UI',system-ui;
+}
+
+.sidebar{
+  background:var(--sidebar);
+  border-right:1px solid var(--border);
+}
+
+.logo{color:var(--text);}
+
+.sidebar a{
+  color:var(--text);
+}
+
+.search{
+  background:var(--glass);
+  color:var(--text);
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+}
+
+.upload-zone{
+  background:var(--glass);
+  border-color:var(--border);
+}
+
+.file-card{
+  background:var(--card);
+  border:1px solid var(--border);
+}
+
+.file-name,
+.card h3,
+.card span,
+h2,
+h3{
+  color:var(--text);
+}
+
+.upload-btn{
+  background:linear-gradient(135deg,var(--accent1),var(--accent2));
+}
+
+button{
+  background:var(--btn);
+  color:white;
+  border:none;
+}

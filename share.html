@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Share File</title>
+<style>
+body{background:#020617;color:white;font-family:system-ui;padding:40px;text-align:center}
+.box{background:rgba(255,255,255,0.08);padding:30px;border-radius:20px}
+input{width:80%;padding:12px;border-radius:10px;border:none}
+.btn{padding:10px 25px;border-radius:10px;border:none;cursor:pointer;background:#2563eb;color:white;margin:5px}
+</style>
+</head>
+<body>
+
+<div class="box">
+
+<h2>Share File</h2>
+
+<form method="POST">
+  <input type="number" name="expiry" placeholder="Expiry days" required>
+  <br><br>
+  <button class="btn">Generate Link</button>
+</form>
+
+{% if link %}
+
+<br>
+<input id="link" value="{{ link }}">
+
+<br><br>
+
+<button class="btn" onclick="copy()">📋 Copy</button>
+
+<a class="btn" href="https://wa.me/?text={{ link }}" target="_blank">📲 WhatsApp</a>
+
+<a class="btn" href="mailto:?subject=Shared File&body={{ link }}">✉ Email</a>
+
+{% endif %}
+
+</div>
+
+<script>
+function copy(){
+  document.getElementById("link").select();
+  document.execCommand("copy");
+  alert("Link Copied");
+}
+</script>
+
+</body>
+</html>

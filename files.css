@@ -1,0 +1,64 @@
+#drop-area{
+border:2px dashed #1a73e8;
+padding:35px;
+border-radius:16px;
+background:#e8f0fe;
+text-align:center;
+margin-bottom:25px;
+}
+
+#drop-area h2{
+color:#1a73e8;
+margin-bottom:8px;
+}
+
+#drop-area p{
+color:#555;
+margin-bottom:10px;
+}
+
+.btn{
+background:#1a73e8;
+color:white;
+padding:10px 25px;
+border-radius:20px;
+cursor:pointer;
+display:inline-block;
+}
+
+.files-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+gap:15px;
+}
+
+.file-card{
+background:white;
+padding:15px;
+border-radius:14px;
+text-align:center;
+box-shadow:0 3px 10px rgba(0,0,0,.05);
+transition:.2s;
+}
+
+.file-card:hover{
+transform:translateY(-3px);
+}
+
+.file-card img{
+width:48px;
+margin-bottom:8px;
+}
+
+.file-card p{
+font-size:13px;
+word-break:break-all;
+}
+
+.file-card a{
+display:block;
+margin-top:8px;
+font-size:12px;
+color:#1a73e8;
+text-decoration:none;
+}
